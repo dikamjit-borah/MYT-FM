@@ -8,9 +8,11 @@ const db = require('./models/index').sequelize
 const port = process.env.PORT || 8081
 
 const jobFetchLatestVideos = require('./jobs/job.fetch-latest-videos')
+const router = require('./routers/router.videos')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(router)
 
 app.listen(port, () => {
    console.log(TAG, `MYT-FM running on port ${port}`)
