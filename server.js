@@ -4,15 +4,23 @@ const TAG = "server.js"
 
 const express = require('express')
 const app = express()
-const bodyParser = require('body-parser')
-const jobFetchLatestVideos = require('./jobs/job.fetch-latest-videos')
-
+const db = require('./models/index').sequelize
 const port = process.env.PORT || 8081
+
+const jobFetchLatestVideos = require('./jobs/job.fetch-latest-videos')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.listen(port, ()=>{
+app.listen(port, () => {
    console.log(TAG, `MYT-FM running on port ${port}`)
-   jobFetchLatestVideos.fetchLatestVideos()
+   db.authenticate().then(() => {
+      console.log(TAG, `MYT-FM connected to database`);
+      jobFetchLatestVideos.fetchLatestVideos()
+   }).catch((error) => {
+      console.log(error);
+   })
 })
+
+
+
