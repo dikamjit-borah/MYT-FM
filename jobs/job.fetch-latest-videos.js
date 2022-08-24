@@ -2,7 +2,7 @@ const constants = require('../utils/constants');
 
 module.exports = {
     fetchLatestVideos: function () {
-        this.callSearchApi()
+        //this.callSearchApi()
         //setInterval(this.V3searchApiCall, 2000)
     },
     callSearchApi: async function () {
