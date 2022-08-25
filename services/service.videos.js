@@ -12,11 +12,32 @@ module.exports = {
             })
             isInserted = queryResult ? true : false
         } catch (err) {
-            console.log("err"+ err);
+            console.log("err" + err);
             error = "" + err
         }
         return {
             isInserted,
+            error
+        }
+    },
+    searchInVideosTbl: async function (searchParam) {
+        let isPresent = false
+        let error
+        let data
+        const query = `SELECT * FROM videos_tbl WHERE videos_tbl.title like '%${searchParam}%' OR videos_tbl.description like '%${searchParam}%'`
+        try {
+            const queryResult = await db.query(query, {
+                logging: console.log
+            })
+            isPresent = queryResult && queryResult[0] && queryResult[0].length>0 ? true : false
+            data = queryResult[0]
+        } catch (err) {
+            console.log(err);
+            error = ""+error
+        }
+        return {
+            isPresent,
+            data,
             error
         }
     }
