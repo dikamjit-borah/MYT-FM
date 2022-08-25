@@ -4,8 +4,8 @@
   "description": "MyYouTube - Backend assignment for fampay",
   "main": "server.js",
   "scripts": {
-    "start:dev": "nodemon server.js",
-    "start:prod": "set NODE_ENV=production && npm migration:run && node server.js",
+    "start:dev": "export NODE_ENV=development && nodemon server.js",
+    "start:prod": "export NODE_ENV=production && npm run migration:run && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migration:generate": "node ./node_modules/sequelize-auto-migrations-v2/bin/makemigration --name migration_file",
     "migration:run": "sequelize db:migrate"
@@ -25,6 +25,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "moment": "^2.29.4",
     "mysql2": "^2.3.3",
     "node-cron": "^3.0.2",
     "sequelize": "^6.21.4",
