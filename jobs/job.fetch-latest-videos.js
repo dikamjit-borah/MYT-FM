@@ -14,21 +14,50 @@ module.exports = {
         try {
             const axiosInstance = await require('../modules/axios.instance').axiosInstanceYoutube()
             let apiKey = config.apiKeys.googleCloud[global.googleCloudApiKeyIndex]
-            console.log(apiKey);
-            const result = await axiosInstance.get('/search', {
+            axiosInstance.interceptors.request.use(function (config) {
+                console.log(config.baseURL.replace(/\/+$/, '') + axiosInstance.getUri(config))
+                return config
+              }, function (error) {
+                return Promise.reject(error)
+              })
+            /* const result = await axiosInstance.get('/search', {
                 params: {
                     key: apiKey,
                     maxResults: 25,
                     q: constants.searchQuery,
                     type: 'video',
                     order: 'date',
+                    part: 'snippet'
                 }
-            })
-            let videoData = responseParser.parseV3searchApi(result.data)
+            }) */
+            
+            //let videoData = responseParser.parseV3searchApi(result.data)
+            /* {
+                videoId: '1fbAG2njIxQ',
+                title: '❤️❤️❤️Cute Cat videos compilation 2022❤️❤️❤️ #tiktok #shorts #catvideos',
+                description: 'Cute cat videos || Cat videos compilation 2022 ||Funny cat videos2022|| Atb Animal videos #shorts #cats #funnycatvideos ...',
+                publishedAt: '2022-08-25T07:02:32Z'
+              }, */
+            let videoData = [
+                {
+                  videoId: '1fbAG2njIxQ',
+                  title: 'Cute Cat videos compilation 2022 #tiktok #shorts #catvideos',
+                  description: 'Cute cat videos || Cat videos compilation 2022 ||Funny cat videos2022|| Atb Animal videos #shorts #cats #funnycatvideos ...',
+                  publishedAt: new Date('2022-08-25T07:02:32Z')
+                },
+                {
+                  videoId: 'J_L39kR9zuw',
+                  title: 'cat videos for kids,funny cat and dog videos,cat sweet sound.funny cat, Cute cat , Funny cat videos,',
+                  description: '',
+                  publishedAt: new Date('2022-08-25T06:33:25Z')
+                },
+                
+              ]
             if (videoData && videoData.length > 0) {
-                console.log(videoData);
+               // console.log(videoData);
             }
-            let { isInserted, error } = await serviceVideos.insertIntoVideosTbl() //service function call returns whether insertion successful or error
+            let videoDataRows = videoData.map(element => Object.values(element));
+            let { isInserted, error } = await serviceVideos.insertIntoVideosTbl(videoDataRows) //service function call returns whether insertion successful or error
 
             //handle cases 1. if insertion is successful 2. in case of error
             if (isInserted) console.log(`Latest videos updated in database`);
@@ -44,7 +73,7 @@ module.exports = {
                     } else global.googleCloudApiKeyIndex = 0 //start again from the first api key
                 }
             }
-            console.log(error.response.status + error.response.statusText);
+            console.error(error);
         }
     }
 }

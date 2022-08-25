@@ -6,7 +6,6 @@ module.exports = {
                 let items = result.items
                 items.forEach(element => {
                     videoId = element.id && element.id.videoId ? element.id.videoId : ""
-                    console.log(videoId);
                     if (videoId && element.snippet) {
                         let snippet = element.snippet
                         let title = snippet.title ? snippet.title : ""
@@ -19,7 +18,6 @@ module.exports = {
                             description,
                             publishedAt
                         })
-
                     }
                 });
             }
