@@ -1,13 +1,15 @@
+const e = require('express');
 const config = require('../config/config');
 const serviceVideos = require('../services/service.videos');
 const constants = require('../utils/constants');
 const responseParser = require('../utils/response.parser');
 
 module.exports = {
+    
     fetchLatestVideos: function () {
         this.callV3SearchApi()
         //callback in setInterval will make the axios call to fetch latest yt videos for searched terms
-        //setInterval(this.V3searchApiCall, 2000)
+        //setInterval(this.callV3SearchApi, 10000)
     },
     callV3SearchApi: async function () {
         //function to make the axios call to fetch search results
@@ -17,51 +19,33 @@ module.exports = {
             axiosInstance.interceptors.request.use(function (config) {
                 console.log(config.baseURL.replace(/\/+$/, '') + axiosInstance.getUri(config))
                 return config
-              }, function (error) {
+            }, function (error) {
                 return Promise.reject(error)
-              })
-            /* const result = await axiosInstance.get('/search', {
+            })
+            const result = await axiosInstance.get('/search', {
                 params: {
                     key: apiKey,
-                    maxResults: 25,
+                    maxResults: 10,
                     q: constants.searchQuery,
                     type: 'video',
                     order: 'date',
+                    publishedAfter: '2022-08-20T00:00:00.000Z', //todo: current date - 1 week
                     part: 'snippet'
                 }
-            }) */
-            
-            //let videoData = responseParser.parseV3searchApi(result.data)
-            /* {
-                videoId: '1fbAG2njIxQ',
-                title: '❤️❤️❤️Cute Cat videos compilation 2022❤️❤️❤️ #tiktok #shorts #catvideos',
-                description: 'Cute cat videos || Cat videos compilation 2022 ||Funny cat videos2022|| Atb Animal videos #shorts #cats #funnycatvideos ...',
-                publishedAt: '2022-08-25T07:02:32Z'
-              }, */
-            let videoData = [
-                {
-                  videoId: '1fbAG2njIxQ',
-                  title: 'Cute Cat videos compilation 2022 #tiktok #shorts #catvideos',
-                  description: 'Cute cat videos || Cat videos compilation 2022 ||Funny cat videos2022|| Atb Animal videos #shorts #cats #funnycatvideos ...',
-                  publishedAt: new Date('2022-08-25T07:02:32Z')
-                },
-                {
-                  videoId: 'J_L39kR9zuw',
-                  title: 'cat videos for kids,funny cat and dog videos,cat sweet sound.funny cat, Cute cat , Funny cat videos,',
-                  description: '',
-                  publishedAt: new Date('2022-08-25T06:33:25Z')
-                },
-                
-              ]
-            if (videoData && videoData.length > 0) {
-               // console.log(videoData);
-            }
-            let videoDataRows = videoData.map(element => Object.values(element));
-            let { isInserted, error } = await serviceVideos.insertIntoVideosTbl(videoDataRows) //service function call returns whether insertion successful or error
+            })
 
-            //handle cases 1. if insertion is successful 2. in case of error
-            if (isInserted) console.log(`Latest videos updated in database`);
-            if (error) console.log(error);
+            let videoData = responseParser.parseV3searchApi(result.data)
+
+            if (videoData && videoData.length > 0) {
+                // console.log(videoData);
+                let videoDataRows = videoData.map(element => Object.values({ ...element, publishedAt: new Date(element.publishedAt) }));
+                let { isInserted, error } = await serviceVideos.insertIntoVideosTbl(videoDataRows) //service function call returns whether insertion successful or error
+                //handle cases 1. if insertion is successful 2. in case of error
+                if (isInserted) console.log(`Latest videos updated in database`);
+                if (error) console.log(error);
+            }
+
+
 
         } catch (error) {
             if (error.response && error.response.status) {
@@ -73,7 +57,10 @@ module.exports = {
                     } else global.googleCloudApiKeyIndex = 0 //start again from the first api key
                 }
             }
-            console.error(error);
+            if(error.code)
+                console.error(error.code);
+            else
+                console.log(error);
         }
     }
 }
