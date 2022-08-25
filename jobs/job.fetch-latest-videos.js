@@ -1,15 +1,15 @@
 const e = require('express');
-const config = require('../config/config');
+const config = require('../config/_config');
 const serviceVideos = require('../services/service.videos');
 const constants = require('../utils/constants');
 const responseParser = require('../utils/response.parser');
 
 module.exports = {
-    
+
     fetchLatestVideos: function () {
-        this.callV3SearchApi()
+        //this.callV3SearchApi()
         //callback in setInterval will make the axios call to fetch latest yt videos for searched terms
-        //setInterval(this.callV3SearchApi, 10000)
+        setInterval(this.callV3SearchApi, 10000)
     },
     callV3SearchApi: async function () {
         //function to make the axios call to fetch search results
@@ -29,27 +29,18 @@ module.exports = {
                     q: constants.searchQuery,
                     type: 'video',
                     order: 'date',
-                    publishedAfter: '2022-08-20T00:00:00.000Z', //todo: current date - 1 week
+                    publishedAfter: '2022-08-20T00:00:00.000Z', //todo: (current date - 1) week
                     part: 'snippet'
                 }
             })
 
             let videoData = responseParser.parseV3searchApi(result.data)
 
-            if (videoData && videoData.length > 0) {
-                // console.log(videoData);
-                let videoDataRows = videoData.map(element => Object.values({ ...element, publishedAt: new Date(element.publishedAt) }));
-                let { isInserted, error } = await serviceVideos.insertIntoVideosTbl(videoDataRows) //service function call returns whether insertion successful or error
-                //handle cases 1. if insertion is successful 2. in case of error
-                if (isInserted) console.log(`Latest videos updated in database`);
-                if (error) console.log(error);
-            }
+            module.exports.updateVideosInDb(videoData)
 
-
-
-        } catch (error) {
-            if (error.response && error.response.status) {
-                if (error.response.status == 403) { // forbidden => wrong api key/ quota exceeded 
+        } catch (err) {
+            if (err.response && err.response.status) {
+                if (err.response.status == 403) { // forbidden => wrong api key/ quota exceeded 
                     let nextIndex = global.googleCloudApiKeyIndex + 1
                     if (((nextIndex) < config.apiKeys.googleCloud.length) && (config.apiKeys.googleCloud[nextIndex])) { // move to the next api key if it is within the array && key exists
                         global.googleCloudApiKeyIndex += 1
@@ -57,10 +48,26 @@ module.exports = {
                     } else global.googleCloudApiKeyIndex = 0 //start again from the first api key
                 }
             }
-            if(error.code)
-                console.error(error.code);
+            if (err.code)
+                console.log(err.code);
             else
-                console.log(error);
+                console.log(err);
         }
+    },
+    updateVideosInDb: async function (videoData) {
+        try {
+            if (videoData && videoData.length > 0) {
+                videoData.forEach(row => { console.log(`Inserting ${row.videoId}`); })
+                let videoDataRows = videoData.map(element => Object.values({ ...element, publishedAt: new Date(element.publishedAt) })); //convert into array of arrays of values for bulk insert format
+                let { isInserted, error } = await serviceVideos.insertIntoVideosTbl(videoDataRows) //service function call returns whether insertion successful or error
+                //handle cases 1. if insertion is successful 2. in case of error
+                if (isInserted) console.log(`Latest videos updated in database`);
+                if (error) console.log(error);
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+
     }
 }

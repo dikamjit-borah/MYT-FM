@@ -4,7 +4,7 @@ module.exports = {
     insertIntoVideosTbl: async function (rows) {
         let isInserted = false
         let error
-        const query = `INSERT INTO videos_tbl (video_id, title, description, publish_time) VALUES ?`
+        const query = `INSERT INTO videos_tbl (video_id, title, description, publish_time) VALUES ? ON DUPLICATE KEY UPDATE video_id=video_id`
         try {
             let queryResult = await db.query(query, {
                 replacements: [rows],
