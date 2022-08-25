@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start:dev": "nodemon server.js",
+    "start:prod": "set NODE_ENV=production && npm migration:run && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "migration:generate": "node ./node_modules/sequelize-auto-migrations-v2/bin/makemigration --name migration_file",
     "migration:run": "sequelize db:migrate"
