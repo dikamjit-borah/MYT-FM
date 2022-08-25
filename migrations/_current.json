@@ -23,21 +23,20 @@
                 },
                 "createdAt": {
                     "defaultValue": {
-                        "internal": true,
-                        "value": "Sequelize.Date"
+                        "value": "2022-08-26 03:30:20"
                     },
                     "field": "createdAt",
                     "seqType": "Sequelize.DATE"
                 },
                 "updatedAt": {
                     "defaultValue": {
-                        "internal": true,
-                        "value": "Sequelize.Date"
+                        "value": "2022-08-26 03:30:20"
                     },
                     "field": "updatedAt",
                     "seqType": "Sequelize.DATE"
                 }
             },
+            "charset": "utf8mb4",
             "indexes": {
                 "854b68fdb2ee6fe8f9e138c1c6560e7f9e6be1e5": {
                     "unique": "false",

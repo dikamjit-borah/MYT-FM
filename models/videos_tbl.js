@@ -1,4 +1,7 @@
 'use strict';
+
+const moment = require('moment')
+
 const {
   Model
 } = require('sequelize');
@@ -18,24 +21,24 @@ module.exports = (sequelize, DataTypes) => {
     publish_time: DataTypes.DATE,
     createdAt: {
       type: DataTypes.DATE,
-      defaultValue: new Date()
+      defaultValue: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
     },
     updatedAt: {
       type: DataTypes.DATE,
-      defaultValue: new Date()
+      defaultValue: moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
     }
   }, {
     sequelize,
     modelName: 'videos_tbl',
     tableName: 'videos_tbl',
-    indexes:[
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_general_ci',
+    indexes: [
       {
-          unique: 'false',
-          fields:['video_id']
+        unique: 'false',
+        fields: ['video_id']
       }
-  ]
-
-    
+    ]
   });
   return videos_tbl;
 };

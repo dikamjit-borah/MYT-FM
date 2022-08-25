@@ -19,7 +19,7 @@ global.cachedVideoData = [] //save distinct data from 10 sec api calls to yt v3 
 app.listen(port, () => {
    console.log(TAG, `MYT-FM running on port ${port}`)
    db.authenticate().then(() => {
-      console.log(TAG, `MYT-FM connected to database`);
+      console.log(TAG, `MYT-FM connected to database ${db.config.database}`);
       jobFetchLatestVideos.fetchLatestVideos()
       //jobUpdateVideos_tbl.updateVideosInDb()
    }).catch((error) => {
