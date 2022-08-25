@@ -13,7 +13,7 @@ const router = require('./routers/router.videos')
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(router)
-
+global.googleCloudApiKeyIndex = 0 //set default googleCloudApiKey from list of keys in config.js
 app.listen(port, () => {
    console.log(TAG, `MYT-FM running on port ${port}`)
    db.authenticate().then(() => {
