@@ -8,12 +8,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   videos_tbl.init({
-    entry_id: {
-      type: DataTypes.INTEGER,
+    video_id: {
+      type: DataTypes.STRING,
       primaryKey: true,
-      autoIncrement: true,
+      allowNull: false,
     },
-    video_id: DataTypes.STRING,
     title: DataTypes.STRING,
     description: DataTypes.STRING,
     publish_time: DataTypes.DATE,
@@ -28,7 +27,15 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'videos_tbl',
-    tableName: 'videos_tbl'
+    tableName: 'videos_tbl',
+    indexes:[
+      {
+          unique: 'false',
+          fields:['video_id']
+      }
+  ]
+
+    
   });
   return videos_tbl;
 };

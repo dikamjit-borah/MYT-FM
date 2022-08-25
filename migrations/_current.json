@@ -3,13 +3,9 @@
         "videos_tbl": {
             "tableName": "videos_tbl",
             "schema": {
-                "entry_id": {
-                    "primaryKey": true,
-                    "autoIncrement": true,
-                    "field": "entry_id",
-                    "seqType": "Sequelize.INTEGER"
-                },
                 "video_id": {
+                    "primaryKey": true,
+                    "allowNull": false,
                     "field": "video_id",
                     "seqType": "Sequelize.STRING"
                 },
@@ -42,7 +38,21 @@
                     "seqType": "Sequelize.DATE"
                 }
             },
-            "indexes": []
+            "indexes": {
+                "854b68fdb2ee6fe8f9e138c1c6560e7f9e6be1e5": {
+                    "unique": "false",
+                    "fields": [
+                        "video_id"
+                    ],
+                    "name": "videos_tbl_video_id",
+                    "options": {
+                        "indexName": "videos_tbl_video_id",
+                        "name": "videos_tbl_video_id",
+                        "indicesType": "UNIQUE",
+                        "type": "UNIQUE"
+                    }
+                }
+            }
         }
     },
     "revision": 1
