@@ -29,11 +29,33 @@ module.exports = {
             const queryResult = await db.query(query, {
                 logging: console.log
             })
-            isPresent = queryResult && queryResult[0] && queryResult[0].length>0 ? true : false
+            isPresent = queryResult && queryResult[0] && queryResult[0].length > 0 ? true : false
             data = queryResult[0]
         } catch (err) {
             console.log(err);
-            error = ""+error
+            error = "" + error
+        }
+        return {
+            isPresent,
+            data,
+            error
+        }
+    },
+    fetchAllFromVideosTbl: async function (offset = 0, limit = 0) {
+        console.log(offset);
+        let isPresent = false
+        let error
+        let data
+        const query = `SELECT * FROM videos_tbl ORDER BY publish_time DESC LIMIT ${offset},${limit}`
+        try {
+            const queryResult = await db.query(query, {
+                logging: console.log
+            })
+            isPresent = queryResult && queryResult[0] && queryResult[0].length > 0 ? true : false
+            data = queryResult[0]
+        } catch (err) {
+            console.log(err);
+            error = "" + error
         }
         return {
             isPresent,

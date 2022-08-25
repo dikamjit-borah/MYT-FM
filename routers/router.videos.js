@@ -8,4 +8,9 @@ router.get(
     controllerVideo.videoSearch
 )
 
+router.get(
+    constants.endpoints.videoAll,
+    controllerVideo.videoAll
+)
+
 module.exports = router
