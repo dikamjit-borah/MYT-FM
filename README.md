@@ -6,6 +6,17 @@ Node.js application that will call **/youtube/v3/search api** after a set interv
 ## Project Structure
 The project is divided into separate modules for separation of concerns, code cleanliness and ease in debugging
 
+## Hosting
+MySQL database is hosted on clever cloud
+
+## Setup
+install docker
+run the following commands
+```
+docker build -t mytfm-image .
+docker run -p 8081:8081 -d --name mytfm-container mytfm-image
+```
+
 ## Functionality
 On starting the node.js application, an *express* server will start and listen on port 8081. It starts a *setInterval* function which runs every 5 mins (this can be configured in the *_config.js*). The callback for this setInterval function is comprised of 2 main tasks. It first calls */youtube/v3/search api* with an *axios* instance. Upon receiving the response, the data in the response is parsed into an array of objects and stored in *videoData*. Secondly, this videoData is then converted into array of values for bulk insertion into the *videos_tbl* table with a map function inside *updateVideosInDb* function. A *sequelize* instance is used to connect to our database and a raw query is used to perform the bulk insert. 
 
