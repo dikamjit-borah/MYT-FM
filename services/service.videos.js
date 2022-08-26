@@ -1,4 +1,9 @@
+const TAG = "service.videos.js"
+
 const db = require('../models/index').sequelize
+const basicUtils = require('../utils/basic.utils')
+
+
 
 module.exports = {
     insertIntoVideosTbl: async function (rows) {
@@ -12,8 +17,8 @@ module.exports = {
             })
             isInserted = queryResult ? true : false
         } catch (err) {
-            console.log("err" + err);
             error = "" + err
+            basicUtils.logger(TAG, error)
         }
         return {
             isInserted,
@@ -24,7 +29,7 @@ module.exports = {
         let isPresent = false
         let error
         let data
-        const query = `SELECT * FROM videos_tbl WHERE videos_tbl.title like '%${searchParam}%' OR videos_tbl.description like '%${searchParam}%'`
+        const query = `SELECT video_id, title, description, publish_time FROM videos_tbl WHERE videos_tbl.title like '%${searchParam}%' OR videos_tbl.description like '%${searchParam}%'`
         try {
             const queryResult = await db.query(query, {
                 logging: console.log
@@ -32,8 +37,8 @@ module.exports = {
             isPresent = queryResult && queryResult[0] && queryResult[0].length > 0 ? true : false
             data = queryResult[0]
         } catch (err) {
-            console.log(err);
-            error = "" + error
+            error = "" + err
+            basicUtils.logger(TAG, error)
         }
         return {
             isPresent,
@@ -42,11 +47,10 @@ module.exports = {
         }
     },
     fetchAllFromVideosTbl: async function (offset = 0, limit = 0) {
-        console.log(offset);
         let isPresent = false
         let error
         let data
-        const query = `SELECT * FROM videos_tbl ORDER BY publish_time DESC LIMIT ${offset},${limit}`
+        const query = `SELECT video_id, title, description, publish_time FROM videos_tbl ORDER BY publish_time DESC LIMIT ${offset},${limit}`
         try {
             const queryResult = await db.query(query, {
                 logging: console.log
@@ -54,8 +58,8 @@ module.exports = {
             isPresent = queryResult && queryResult[0] && queryResult[0].length > 0 ? true : false
             data = queryResult[0]
         } catch (err) {
-            console.log(err);
-            error = "" + error
+            error = "" + err
+            basicUtils.logger(TAG, error)
         }
         return {
             isPresent,
