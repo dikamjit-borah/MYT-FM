@@ -6,6 +6,17 @@ Node.js application that will call **/youtube/v3/search api** after a set interv
 ## Project Structure
 The project is divided into separate modules for separation of concerns, code cleanliness and ease in debugging
 
+## Hosting
+MySQL database is hosted on clever cloud
+
+## Setup
+install docker
+run the following commands
+```
+docker build -t mytfm-image .
+docker run -p 8081:8081 -d --name mytfm-container mytfm-image
+```
+
 ## Functionality
 On starting the node.js application, an *express* server will start and listen on port 8081. It starts a *setInterval* function which runs every 5 mins (this can be configured in the *_config.js*). The callback for this setInterval function is comprised of 2 main tasks. It first calls */youtube/v3/search api* with an *axios* instance. Upon receiving the response, the data in the response is parsed into an array of objects and stored in *videoData*. Secondly, this videoData is then converted into array of values for bulk insertion into the *videos_tbl* table with a map function inside *updateVideosInDb* function. A *sequelize* instance is used to connect to our database and a raw query is used to perform the bulk insert. 
 
@@ -18,9 +29,9 @@ The application has 2 necessary endpoints
 
 **GET** /api/v1/video/search HTTP/1.1
 **PARAMS** searchParam
-**Host** localhost:8081
+**HOST** localhost:8081
 
-#### example call & response
+#### example call & sample response
 ```
 http://localhost:8081/api/v1/video/search?searchParam=funny
 ```
@@ -50,4 +61,30 @@ http://localhost:8081/api/v1/video/search?searchParam=funny
 
 **GET** /api/v1/video/all HTTP/1.1
 **PARAMS** page, limit
-**Host** localhost:8081
+**HOST** localhost:8081
+
+#### example call and sample response
+```
+http://localhost:8081/api/v1/video/all?page=2&limit=10
+```
+
+```
+{
+    "statusCode": 200,
+    "message": "All videos fetched successfully for page 2 showing 10 results",
+    "data": [
+        {
+            "video_id": "zLEUukG7N98",
+            "title": "funny cat videos🐈#kitten #cute#shorts",
+            "description": "",
+            "publish_time": "2022-08-26T08:32:55.000Z"
+        },
+        {
+            "video_id": "Zw4H8E7pVGc",
+            "title": "funny cat videos, cat, cute animals, funny cats compilation, funny cats videos",
+            "description": "cute cat,plz subscribe animal fair channel.",
+            "publish_time": "2022-08-26T08:31:02.000Z"
+        },
+    ]
+}
+ ```
