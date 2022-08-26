@@ -2,6 +2,7 @@ const TAG = "job.fetch-latest-video.js"
 
 const config = require('../config/_config');
 const serviceVideos = require('../services/service.videos');
+const basicUtils = require('../utils/basic.utils');
 const constants = require('../utils/constants');
 const responseParser = require('../utils/response.parser');
 
@@ -22,7 +23,7 @@ module.exports = {
 
             //axios interceptor to log requests before making them
             axiosInstance.interceptors.request.use(function (config) {
-                console.log(config.baseURL.replace(/\/+$/, '') + axiosInstance.getUri(config))
+                basicUtils.logger(TAG, `Hitting ${config.baseURL.replace(/\/+$/, '') + axiosInstance.getUri(config)}`)
                 return config
             }, function (error) {
                 return Promise.reject(error)
@@ -59,20 +60,19 @@ module.exports = {
                 console.log(err);
         }
     },
-    
+
     updateVideosInDb: async function (videoData) {
         try {
             if (videoData && videoData.length > 0) {
-                videoData.forEach(row => { console.log(`Inserting ${row.videoId}`); })
                 let videoDataRows = videoData.map(element => Object.values({ ...element, publishedAt: new Date(element.publishedAt) })); //convert into array of arrays of values for bulk insert format
                 let { isInserted, error } = await serviceVideos.insertIntoVideosTbl(videoDataRows) //service function call returns whether insertion successful or error
                 //handle cases 1. if insertion is successful 2. in case of error
-                if (isInserted) console.log(`Latest videos updated in database`);
-                if (error) console.log(error);
+                if (isInserted) basicUtils.logger(TAG, `videos_tbl updated successfully`);
+                if (error) basicUtils.logger(TAG, error)
             }
         }
         catch (err) {
-            console.log(err);
+            basicUtils.logger(TAG, ""+err)
         }
 
     }

@@ -10,6 +10,7 @@ const port = process.env.PORT || 8081
 const jobFetchLatestVideos = require('./jobs/job.fetch-latest-videos')
 //const jobUpdateVideos_tbl = require('./jobs/job.update-videos_tbl')
 const router = require('./routers/router.videos')
+const basicUtils = require('./utils/basic.utils')
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -19,11 +20,11 @@ global.cachedVideoData = [] //save distinct data from 10 sec api calls to yt v3 
 app.listen(port, () => {
    console.log(TAG, `MYT-FM running on port ${port}`)
    db.authenticate().then(() => {
-      console.log(TAG, `MYT-FM connected to database ${db.config.database}`);
+      basicUtils.logger(TAG, `MYT-FM connected to database ${db.config.database}`);
       jobFetchLatestVideos.fetchLatestVideos()
       //jobUpdateVideos_tbl.updateVideosInDb()
-   }).catch((error) => {
-      console.log(error);
+   }).catch((err) => {
+      basicUtils.logger(TAG, err);
    })
 })
 
