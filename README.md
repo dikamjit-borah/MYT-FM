@@ -18,9 +18,9 @@ The application has 2 necessary endpoints
 
 **GET** /api/v1/video/search HTTP/1.1
 **PARAMS** searchParam
-**Host** localhost:8081
+**HOST** localhost:8081
 
-#### example call & response
+#### example call & sample response
 ```
 http://localhost:8081/api/v1/video/search?searchParam=funny
 ```
@@ -50,4 +50,30 @@ http://localhost:8081/api/v1/video/search?searchParam=funny
 
 **GET** /api/v1/video/all HTTP/1.1
 **PARAMS** page, limit
-**Host** localhost:8081
+**HOST** localhost:8081
+
+#### example call and sample response
+```
+http://localhost:8081/api/v1/video/all?page=2&limit=10
+```
+
+```
+{
+    "statusCode": 200,
+    "message": "All videos fetched successfully for page 2 showing 10 results",
+    "data": [
+        {
+            "video_id": "zLEUukG7N98",
+            "title": "funny cat videos🐈#kitten #cute#shorts",
+            "description": "",
+            "publish_time": "2022-08-26T08:32:55.000Z"
+        },
+        {
+            "video_id": "Zw4H8E7pVGc",
+            "title": "funny cat videos, cat, cute animals, funny cats compilation, funny cats videos",
+            "description": "cute cat,plz subscribe animal fair channel.",
+            "publish_time": "2022-08-26T08:31:02.000Z"
+        },
+    ]
+}
+ ```
